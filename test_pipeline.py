@@ -16,6 +16,11 @@ def _fake_docs():
         Doc(page_content="Как привязать номер телефона к аккаунту Mail.ru"),
         Doc(page_content="Как отвязать VK ID от учетной записи"),
     ]
+def test_docs_shape():
+    docs = _fake_docs()
+    assert isinstance(docs, list)
+    assert len(docs) > 0
+    assert hasattr(docs[0], "page_content")
 
 def test_retriever_builds_without_db():
     docs = _fake_docs()
