@@ -51,11 +51,15 @@ The RAG model allows combining external document retrieval with generative langu
   - **With RAG** – answer strictly within retrieved context  
 - Implemented through LangChain runnable composition:
   ```python
-  rag = {"context": retriever | format_docs, "question": RunnablePassthrough()} \
-
+ rag = (
+    {"context": retriever | format_docs, "question": RunnablePassthrough()}
+    | prompt
+    | llm
+    | StrOutputParser()
+)
 ### Persistence
 
-- Data (help_mail_ru.pkl) and FAISS index (db/) allow full reproducibility.
+- Data `help_mail_ru.pkl` and FAISS index (`db/`) allow full reproducibility.
 
 - No weight saving (save_pretrained) is required since pretrained API models are used.
 
