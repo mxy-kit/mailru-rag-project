@@ -93,13 +93,13 @@ embedding_model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 llm_model: "llama-3.1-8b-instant"
 retrieval_top_k: 6
 temperature: 0
-
+```
 To run the project:
 
 ```bash
 pip install -r requirements.txt
 python train.py
-
+```
 Logging is handled through Python’s logging module.
 Each stage (loading → retrieval → generation) prints structured messages.
 
@@ -111,7 +111,7 @@ All steps can be reproduced without retraining:
 with open("help_mail_ru.pkl", "rb") as f:
     docs = pickle.load(f)
 db = FAISS.load_local("db", embeddings, allow_dangerous_deserialization=True)
-
+```
 
 ### Conclusion
 
