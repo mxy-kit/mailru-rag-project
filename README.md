@@ -57,6 +57,7 @@ The RAG model allows combining external document retrieval with generative langu
     | llm
     | StrOutputParser()
 )
+```
 ### Persistence
 
 - Data `help_mail_ru.pkl` and FAISS index (`db/`) allow full reproducibility.
