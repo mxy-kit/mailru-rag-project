@@ -50,7 +50,7 @@ The RAG model allows combining external document retrieval with generative langu
   - **Without RAG** – refusal policy for unrelated questions (prevents hallucination)
   - **With RAG** – answer strictly within retrieved context  
 - Implemented through LangChain runnable composition:
-  ```python
+```python
  rag = (
     {"context": retriever | format_docs, "question": RunnablePassthrough()}
     | prompt
