@@ -3,6 +3,13 @@ import yaml
 import time
 import logging
 from rag_pipeline import load_data_and_db, build_rag_pipeline
+import random, numpy as np
+
+def set_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+
+set_seed(cfg["seed"])
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
