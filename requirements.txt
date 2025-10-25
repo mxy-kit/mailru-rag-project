@@ -1,0 +1,9 @@
+langchain
+langchain-community
+sentence-transformers
+faiss-cpu
+groq
+torch
+numpy
+scikit-learn
+beautifulsoup4
