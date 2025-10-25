@@ -82,6 +82,37 @@ The RAG model allows combining external document retrieval with generative langu
 | Embedding uniformity | ≤ −1.7    | −2.41                  | ✅                | Balanced vector distribution    |
 | Alignment ratio      | ≤ 0.03    | 0.028                  | ✅                | Stable semantic representation  |
 
+### Configuration and Execution
+
+All runtime parameters are stored in `config.yaml`:
+
+```yaml
+seed: 42
+chunk_size: 500
+embedding_model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+llm_model: "llama-3.1-8b-instant"
+retrieval_top_k: 6
+temperature: 0
+
+To run the project:
+
+```bash
+pip install -r requirements.txt
+python train.py
+
+Logging is handled through Python’s logging module.
+Each stage (loading → retrieval → generation) prints structured messages.
+
+### Reproducibility
+
+All steps can be reproduced without retraining:
+
+```python
+with open("help_mail_ru.pkl", "rb") as f:
+    docs = pickle.load(f)
+db = FAISS.load_local("db", embeddings, allow_dangerous_deserialization=True)
+
+
 ### Conclusion
 
 This RAG implementation fulfills all functional and structural requirements of the ML project:
@@ -94,5 +125,4 @@ This RAG implementation fulfills all functional and structural requirements of t
 
 -The system demonstrates a complete, reproducible, and production-ready RAG workflow for Mail.ru Help Center.
 
-        | prompt | llm | StrOutputParser()
 
