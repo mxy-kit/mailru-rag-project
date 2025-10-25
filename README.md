@@ -4,7 +4,7 @@
 
 ---
 
-##  Project Goal / Цель проекта
+##  Project Goal 
 
 The goal of this project is to develop an intelligent assistant for the Mail.ru Help Center using the **Retrieval-Augmented Generation (RAG)** approach.  
 The system retrieves relevant documents from the help knowledge base and generates concise, human-like answers in Russian.  
