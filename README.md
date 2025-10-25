@@ -56,7 +56,8 @@ The RAG model allows combining external document retrieval with generative langu
     | prompt
     | llm
     | StrOutputParser()
-)```
+)
+```
 
 ### Persistence
 
