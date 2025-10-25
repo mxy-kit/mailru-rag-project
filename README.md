@@ -105,18 +105,24 @@ python train.py
 Logging is handled through Python’s logging module.
 Each stage (loading → retrieval → generation) prints structured messages.
 
+### Repository Structure Overview
 
+- This repository follows a modular MLOps-style organization.
+- Each Python file represents a logical component of the RAG pipeline:
 
-### Conclusion
+| File                                   | Purpose                                                                                                                                                                     |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`rag_mailru_qa_with_outputs.ipynb`** | The full experimental notebook with all code, outputs, and visualizations. This is the main reference for reproducing results and evaluation metrics.                       |
+| **`rag_pipeline.py`**                  | Contains reusable functions for data loading, preprocessing, embedding generation, and RAG pipeline construction.                                                           |
+| **`train.py`**                         | Serves as the entry point for training and evaluation; reads parameters from `config.yaml`, initializes embeddings, builds the retriever–generator chain, and logs results. |
+| **`test_pipeline.py`**                 | Includes lightweight tests to validate data integrity, pipeline structure, and output types — not model accuracy. Used to simulate CI/CD integration.                       |
+| **`config.yaml`**                      | Stores configuration parameters such as model names, data paths, random seed, and retriever settings for reproducibility.                                                   |
+| **`requirements.txt`**                 | Lists core dependencies (LangChain, FAISS, HuggingFace, Torch, etc.) required to reproduce the pipeline.                                                                    |
+| **`.github/workflows/test.yml`**       | Automates unit testing via GitHub Actions upon each commit (verifies that the repository is self-consistent).                                                               |
 
-This RAG implementation fulfills all functional and structural requirements of the ML project:
+### Note:
+- The .py scripts represent modularized components of the same pipeline shown in the notebook.
+- They are designed for MLOps compliance and structural clarity, rather than independent execution.
 
-- Full data pipeline from scraping → indexing → generation
-
-- Model quality validated via BLEU and LLM-as-judge
-
-- Embedding robustness proven by uniformity and alignment metrics
-
--The system demonstrates a complete, reproducible, and production-ready RAG workflow for Mail.ru Help Center.
 
 
