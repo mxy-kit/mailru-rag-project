@@ -105,15 +105,7 @@ python train.py
 Logging is handled through Python’s logging module.
 Each stage (loading → retrieval → generation) prints structured messages.
 
-### Reproducibility
 
-All steps can be reproduced without retraining:
-
-```python
-with open("help_mail_ru.pkl", "rb") as f:
-    docs = pickle.load(f)
-db = FAISS.load_local("db", embeddings, allow_dangerous_deserialization=True)
-```
 
 ### Conclusion
 
