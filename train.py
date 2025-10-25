@@ -28,9 +28,9 @@ def main():
     answer = rag.invoke(query)
     latency = time.time() - start
 
-    print("\n🧠 Question:", query)
-    print("💬 Answer:", answer)
-    print(f"⚡ Response latency: {latency:.3f} s")
+    print("\n Question:", query)
+    print("Answer:", answer)
+    print(f"Response latency: {latency:.3f} s")
 
 if __name__ == "__main__":
     main()
