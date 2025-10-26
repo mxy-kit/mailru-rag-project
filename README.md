@@ -111,14 +111,18 @@ Each stage (loading → retrieval → generation) prints structured messages.
 - Each Python file represents a logical component of the RAG pipeline:
 
 | File                                   | Purpose                                                                                                                                                                     |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`rag_mailru_qa_with_outputs.ipynb`** | The full experimental notebook with all code, outputs, and visualizations. This is the main reference for reproducing results and evaluation metrics.                       |
-| **`rag_pipeline.py`**                  | Contains reusable functions for data loading, preprocessing, embedding generation, and RAG pipeline construction.                                                           |
-| **`train.py`**                         | Serves as the entry point for training and evaluation; reads parameters from `config.yaml`, initializes embeddings, builds the retriever–generator chain, and logs results. |
-| **`test_pipeline.py`**                 | Includes lightweight tests to validate data integrity, pipeline structure, and output types — not model accuracy. Used to simulate CI/CD integration.                       |
-| **`config.yaml`**                      | Stores configuration parameters such as model names, data paths, random seed, and retriever settings for reproducibility.                                                   |
-| **`requirements.txt`**                 | Lists core dependencies (LangChain, FAISS, HuggingFace, Torch, etc.) required to reproduce the pipeline.                                                                    |
-| **`.github/workflows/test.yml`**       | Automates unit testing via GitHub Actions upon each commit (verifies that the repository is self-consistent).                                                               |
+                                                                                                                                                                           |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`rag_mailru_qa_with_outputs.ipynb`** | The complete experimental notebook containing all code, visualizations, and final outputs. Serves as the main reference for reproducing results and evaluation metrics.              |
+| **`rag_pipeline.py`**                  | Contains modular functions for data loading, preprocessing, embedding generation, and RAG pipeline construction.                                                                     |
+| **`train.py`**                         | Serves as the main entry point for training and evaluation; reads configuration from `config.yaml`, initializes embeddings, builds the retriever–generator chain, and logs progress. |
+| **`test_pipeline.py`**                 | Contains lightweight tests for validating data structure, pipeline consistency, and output types (not model accuracy). Integrated into CI/CD workflow.                               |
+| **`config.yaml`**                      | Stores configuration parameters such as model names, random seed, and retriever settings for reproducibility.                                                                        |
+| **`requirements.txt`**                 | Lists all core dependencies (LangChain, FAISS, HuggingFace, Torch, etc.) required to reproduce the RAG pipeline.                                                                     |
+| **`.github/workflows/test.yml`**       | GitHub Actions workflow for automated testing upon every commit — ensures repository consistency and code integrity.                                                                 |
+| **`help_mail_ru.pkl`**                 | Serialized dataset containing the cleaned and preprocessed Mail.ru Help Center documentation, generated via recursive web scraping and HTML parsing.                                 |
+| **`db/`**                              | Persistent FAISS vector database folder (contains `index.faiss` and `index.pkl`), enabling efficient semantic retrieval without re-indexing.                                         |
+
 
 ### Note:
 - The .py scripts represent modularized components of the same pipeline shown in the notebook.
