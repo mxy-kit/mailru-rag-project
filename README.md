@@ -110,8 +110,7 @@ Each stage (loading → retrieval → generation) prints structured messages.
 - This repository follows a modular MLOps-style organization.
 - Each Python file represents a logical component of the RAG pipeline:
 
-| File                                   | Purpose                                                                                                                                                                     |
-                                                                                                                                                                           |
+| File                                   | Purpose                                                                                                                                                                                     
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **`rag_mailru_qa_with_outputs.ipynb`** | The complete experimental notebook containing all code, visualizations, and final outputs. Serves as the main reference for reproducing results and evaluation metrics.              |
 | **`rag_pipeline.py`**                  | Contains modular functions for data loading, preprocessing, embedding generation, and RAG pipeline construction.                                                                     |
