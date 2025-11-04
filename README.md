@@ -50,14 +50,6 @@ The multilingual MiniLM model (`sentence-transformers/paraphrase-multilingual-Mi
 
 This step slightly adjusts the embedding space, improving retrieval precision for domain-specific phrasing (e.g., “восстановить пароль”, “удалить аккаунт”).
 
-| Component | Description |
-|------------|-------------|
-| Model | `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` |
-| Training pairs | 3–5 manually selected Mail.ru Help Center Q&A examples |
-| Loss | `MultipleNegativesRankingLoss` |
-| Epochs | 1 |
-| Output path | `/content/drive/MyDrive/fine_tuned_embeddings/` |
-| Integration | Used as the embedding model for FAISS indexing in `train.py` |
 
 The fine-tuned model is automatically trained and saved before the RAG pipeline initialization.  
 This ensures the system uses embeddings better aligned with the Mail.ru support domain.
