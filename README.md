@@ -130,19 +130,18 @@ Each stage (loading → retrieval → generation) prints structured messages.
 - This repository follows a modular MLOps-style organization.
 - Each Python file represents a logical component of the RAG pipeline:
 
-| File                                   | Purpose                                                                                                                                                                                     
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`rag_mailru_qa_with_outputs.ipynb`** | The complete experimental notebook containing all code, visualizations, and final outputs. Serves as the main reference for reproducing results and evaluation metrics.              |
-| **`rag_pipeline.py`**                  | Contains modular functions for data loading, preprocessing, embedding generation, and RAG pipeline construction.                                                                     |
-| **`train.py`** | Serves as the main entry point for fine-tuning and evaluation. It performs a lightweight domain-specific fine-tuning of the MiniLM embedding model, reads configuration from `config.yaml`, builds the retriever–generator RAG pipeline, and logs all key stages of execution. |
-
-| **`test_pipeline.py`**                 | Contains lightweight tests for validating data structure, pipeline consistency, and output types (not model accuracy). Integrated into CI/CD workflow.                               |
-| **`config.yaml`**                      | Stores configuration parameters such as model names, random seed, and retriever settings for reproducibility.                                                                        |
-| **`requirements.txt`**                 | Lists all core dependencies (LangChain, FAISS, HuggingFace, Torch, etc.) required to reproduce the RAG pipeline.                                                                     |
-| **`.github/workflows/test.yml`**       | GitHub Actions workflow for automated testing upon every commit — ensures repository consistency and code integrity.                                                                 |
-| **`help_mail_ru.pkl`**                 | Serialized dataset containing the cleaned and preprocessed Mail.ru Help Center documentation, generated via recursive web scraping and HTML parsing.                                 |
-| **`db/`**                              | Persistent FAISS vector database folder (contains `index.faiss` and `index.pkl`), enabling efficient semantic retrieval without re-indexing.                                         |
-
+| File | Purpose |
+|---|---|
+| **`rag_mailru_qa_with_outputs.ipynb`** | Full experimental notebook with all code, outputs, and visualizations. Main reference for reproducing results and evaluation metrics. |
+| **`rag_pipeline.py`** | Modular functions for data loading, preprocessing, embedding generation, and RAG pipeline construction. |
+| **`train.py`** | Entry point for **fine-tuning** and evaluation: performs a lightweight domain-specific fine-tune of MiniLM embeddings, reads `config.yaml`, builds the retriever→generator RAG pipeline, and logs key stages. |
+| **`test_pipeline.py`** | Lightweight tests validating data structure, pipeline consistency, and output types (not model accuracy). Runs in CI. |
+| **`config.yaml`** | Configuration (seed, model names/paths, retriever settings, etc.) for full reproducibility. |
+| **`requirements.txt`** | Core dependencies (LangChain, FAISS, HuggingFace, Torch, etc.). |
+| **`.github/workflows/test.yml`** | GitHub Actions workflow to run tests on every commit. |
+| **`help_mail_ru.pkl`** | Serialized, cleaned Mail.ru Help Center corpus (from recursive web scraping + HTML parsing). |
+| **`db/`** | Persisted FAISS vector index (`index.faiss`, `index.pkl`) to avoid re-indexing. |
+| **`fine_tuned_embeddings.zip`** | **Zipped Sentence-Transformers model** after fine-tuning (MiniLM). **Unzip to `./fine_tuned_embeddings/` before running**, then set `embedding_model: "./fine_tuned_embeddings"` in `config.yaml`. |
 
 ### Note:
 - The .py scripts represent modularized components of the same pipeline shown in the notebook.
