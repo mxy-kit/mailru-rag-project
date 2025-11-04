@@ -28,3 +28,19 @@ def test_retriever_builds_without_db():
     retriever = build_retriever(docs=docs, embeddings=embeddings, db=None, top_k=2)
     # retriever should expose a retrieval method
     assert hasattr(retriever, "get_relevant_documents")
+def test_docs_structure():
+    docs = _fake_docs()
+    assert all(hasattr(d, "page_content") for d in docs)
+    assert isinstance(docs[0].page_content, str)
+
+def test_embedding_shapes():
+    emb = FakeEmbeddings()
+    result = emb.embed_documents(["hello", "world"])
+    assert len(result) == 2
+    assert len(result[0]) == 8
+
+def test_rag_output_type():
+    from rag_pipeline import build_rag_pipeline
+    retriever = type("MockRetriever", (), {"invoke": lambda self, q: "test_answer"})()
+    rag = build_rag_pipeline(db=None, llm_model="dummy", top_k=2, temperature=0)
+    assert callable(getattr(rag, "invoke", None))
