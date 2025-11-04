@@ -39,11 +39,20 @@ def format_docs(docs):
 
 
 class _DummyLLM:
-    """Tiny LLM stub so tests can run without API keys/network."""
+    """Tiny LLM stub so tests can run without API keys/network.
+
+    Must be callable so LC pipeline can coerce it via RunnableLambda.
+    """
     def __init__(self, *args, **kwargs):
         pass
-    def invoke(self, prompt):
+
+    def __call__(self, prompt):
+        # Return a deterministic, harmless string for tests
         return "Stub LLM response. See https://help.mail.ru/"
+
+    def invoke(self, prompt):
+        # Keep invoke for direct calls; delegate to __call__
+        return self.__call__(prompt)
 
 
 def _has_groq_key() -> bool:
