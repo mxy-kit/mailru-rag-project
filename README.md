@@ -62,6 +62,9 @@ This step slightly adjusts the embedding space, improving retrieval precision fo
 The fine-tuned model is automatically trained and saved before the RAG pipeline initialization.  
 This ensures the system uses embeddings better aligned with the Mail.ru support domain.
 
+My  **model weights** have been uploaded to Hugging Face for reproducibility:  
+[[https://huggingface.co/xinyuema/tt-gpt-small2](https://huggingface.co/xinyuema/mailru-finetuned-minilm)] 
+
 
 ### Retrieval and Generation
 - Retriever: `FAISS.as_retriever(k=6)`  
