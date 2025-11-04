@@ -63,7 +63,7 @@ The fine-tuned model is automatically trained and saved before the RAG pipeline 
 This ensures the system uses embeddings better aligned with the Mail.ru support domain.
 
 My  **model weights** have been uploaded to Hugging Face for reproducibility:  
-[[https://huggingface.co/xinyuema/tt-gpt-small2](https://huggingface.co/xinyuema/mailru-finetuned-minilm)] 
+[[ https://huggingface.co/xinyuema/mailru-finetuned-minilm](https://huggingface.co/xinyuema/mailru-finetuned-minilm)] 
 
 
 ### Retrieval and Generation
