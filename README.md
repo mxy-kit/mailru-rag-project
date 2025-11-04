@@ -134,18 +134,22 @@ Each stage (loading → retrieval → generation) prints structured messages.
 - This repository follows a modular MLOps-style organization.
 - Each Python file represents a logical component of the RAG pipeline:
 
-| File | Purpose |
-|---|---|
-| **`rag_mailru_qa_with_outputs.ipynb`** | Full experimental notebook with all code, outputs, and visualizations. Main reference for reproducing results and evaluation metrics. |
-| **`rag_pipeline.py`** | Modular functions for data loading, preprocessing, embedding generation, and RAG pipeline construction. |
-| **`train.py`** | Entry point for **fine-tuning** and evaluation: performs a lightweight domain-specific fine-tune of MiniLM embeddings, reads `config.yaml`, builds the retriever→generator RAG pipeline, and logs key stages. |
-| **`test_pipeline.py`** | Lightweight tests validating data structure, pipeline consistency, and output types (not model accuracy). Runs in CI. |
-| **`config.yaml`** | Configuration (seed, model names/paths, retriever settings, etc.) for full reproducibility. |
-| **`requirements.txt`** | Core dependencies (LangChain, FAISS, HuggingFace, Torch, etc.). |
-| **`.github/workflows/test.yml`** | GitHub Actions workflow to run tests on every commit. |
-| **`help_mail_ru.pkl`** | Serialized, cleaned Mail.ru Help Center corpus (from recursive web scraping + HTML parsing). |
-| **`db/`** | Persisted FAISS vector index (`index.faiss`, `index.pkl`) to avoid re-indexing. |
-| **`fine_tuned_embeddings.zip`** | **Zipped Sentence-Transformers model** after fine-tuning (MiniLM). **Unzip to `./fine_tuned_embeddings/` before running**, then set `embedding_model: "./fine_tuned_embeddings"` in `config.yaml`. |
+| File                            | Purpose                                                                                                                                                                       |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`README.md`**                 | Project overview, production targets, how to run, and evaluation results.                                                                                                     |
+| **`rag_mailru_qa.ipynb`**       | End-to-end experimental notebook with code, outputs, and visualizations (reference for reproducing metrics).                                                                  |
+| **`rag_pipeline.py`**           | Modular RAG components: data loading/cleaning, embedding & FAISS index, retriever → generator pipeline.                                                                       |
+| **`train.py`**                  | Entry point: reads `config.yaml`, sets seed, (optionally) fine-tunes embeddings, builds the RAG pipeline, logs stages.                                                        |
+| **`test_pipeline.py`**          | Lightweight tests for data structure, pipeline wiring, and output contract (not model accuracy). Runs in CI.                                                                  |
+| **`data_validation.py`**        | Pandera schema + basic stats to validate the cleaned corpus (`help_mail_ru.pkl`).                                                                                             |
+| **`eval_retrieval.py`**         | Retrieval evaluation (e.g., Recall@k / MRR) and small ablations for k/chunking/finetune vs. base.                                                                             |
+| **`api.py`**                    | Optional FastAPI endpoint (`POST /ask`) returning `{answer, citations, policy}` for quick API integration.                                                                    |
+| **`config.yaml`**               | Single source of truth for seed, models/paths, chunk size, `retrieval_top_k`, temperature, etc.                                                                               |
+| **`requirements.txt`**          | Pinned core deps (LangChain, FAISS, Hugging Face, Torch, Pandera, PyTest, etc.).                                                                                              |
+| **`.github/workflows/*.yml`**   | GitHub Actions: install deps, run lint/tests on every push/PR; fails on errors.                                                                                               |
+| **`help_mail_ru.pkl`**          | Serialized, cleaned Mail.ru Help Center corpus (recursive crawl + HTML parsing).                                                                                              |
+| **`db/`**                       | Persisted FAISS index (`index.faiss`, `index.pkl`) to avoid re-indexing.                                                                                                      |
+| **`fine_tuned_embeddings.zip`** | Zipped Sentence-Transformers model after fine-tuning (MiniLM). **Unzip to `./fine_tuned_embeddings/`** and set `embedding_model: "./fine_tuned_embeddings"` in `config.yaml`. |
 
 ### Note:
 - The .py scripts represent modularized components of the same pipeline shown in the notebook.
