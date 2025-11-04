@@ -26,6 +26,15 @@ The RAG model allows combining external document retrieval with generative langu
 | Embedding uniformity | ≤ -1.7 | Balanced vector space |
 | Alignment ratio | ≤ 0.03 | Stable embedding representation |
 
+## Production Metrics (Targets)
+- Latency: P50 ≤ 200 ms, P95 ≤ 500 ms
+- Error rate: ≤ 1%
+- Resource: CPU ≤ 2 vCPU, RAM ≤ 2 GB (single instance)
+- Availability: ≥ 99.5%
+- Business KPI: One-shot answer rate ≥ 70%, Escalation to human ≤ 15%
+
+
+
 
 
 ## Pipeline Description
