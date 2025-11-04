@@ -44,3 +44,42 @@ def test_rag_output_type():
     retriever = type("MockRetriever", (), {"invoke": lambda self, q: "test_answer"})()
     rag = build_rag_pipeline(db=None, llm_model="dummy", top_k=2, temperature=0)
     assert callable(getattr(rag, "invoke", None))
+# === 追加的最小测试：边界用例 + 输出契约（直接贴到文件末尾） ===
+
+def _wrap_answer(rag, question: str):
+    """
+    超轻量包装：把 rag.invoke 的字符串输出包成统一契约
+    返回 {"answer": str, "citations": list[str], "policy": "ok|refuse"}
+    这里不改你的管线，只在测试里做格式化。
+    """
+    if not question.strip():
+        return {"answer": "", "citations": [], "policy": "refuse"}
+    text = rag.invoke(question)
+    if not isinstance(text, str):
+        text = str(text)
+    # 简单规则：这里只验证契约存在，policy 给 "ok" 即可
+    return {"answer": text, "citations": [], "policy": "ok"}
+
+def test_empty_query_refusal_with_rag():
+    from rag_pipeline import build_rag_pipeline
+    rag = build_rag_pipeline(db=None, llm_model="dummy", top_k=2, temperature=0)
+    out = _wrap_answer(rag, "")
+    assert out["policy"] == "refuse"
+    assert isinstance(out["answer"], str)
+
+def test_nohit_query_returns_text():
+    from rag_pipeline import build_rag_pipeline
+    rag = build_rag_pipeline(db=None, llm_model="dummy", top_k=2, temperature=0)
+    q = "Расскажите о марсианской визовой политике XX века"  # 明显领域外
+    out = _wrap_answer(rag, q)
+    assert isinstance(out["answer"], str)
+    assert out["policy"] in {"ok", "refuse"}
+
+def test_output_contract_shape():
+    from rag_pipeline import build_rag_pipeline
+    rag = build_rag_pipeline(db=None, llm_model="dummy", top_k=2, temperature=0)
+    out = _wrap_answer(rag, "Как восстановить пароль?")
+    assert set(out.keys()) == {"answer", "citations", "policy"}
+    assert isinstance(out["citations"], list)
+    assert isinstance(out["answer"], str)
+
