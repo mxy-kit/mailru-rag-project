@@ -94,7 +94,7 @@ My  **model weights** have been uploaded to Hugging Face for reproducibility:
 - **Retrieval metrics:** Recall@k and MRR (finetuned vs. base).
 - **End metrics:** Target BLEU ≥ 0.04 and LLM-as-judge ≥ 3.5; stop when both are met.
 - **Hallucination control:** refusal policy when context is empty or out-of-scope.
-
+---
 
 ### Key Results
 
@@ -147,8 +147,8 @@ pip install -r requirements.txt
 # Optional: use local finetuned embeddings
 unzip fine_tuned_embeddings.zip -d ./fine_tuned_embeddings
 python train.py --config config.yaml --verbose
-
-
+```
+---
 ### Repository Structure Overview
 
 - This repository follows a modular MLOps-style organization.
