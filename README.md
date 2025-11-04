@@ -43,6 +43,26 @@ The RAG model allows combining external document retrieval with generative langu
 - Chunking: size = 500, overlap = 100  
 - MiniLM demonstrated the best uniformity (−2.41) and alignment (0.028), thus selected as the final embedder.
 
+### Fine-tuning Step
+
+To further adapt the embedding model to the Mail.ru Help Center domain, a lightweight fine-tuning procedure was implemented in `train.py` before building the FAISS index.  
+The multilingual MiniLM model (`sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`) was fine-tuned on several representative query–answer pairs extracted from the help corpus.
+
+This step slightly adjusts the embedding space, improving retrieval precision for domain-specific phrasing (e.g., “восстановить пароль”, “удалить аккаунт”).
+
+| Component | Description |
+|------------|-------------|
+| Model | `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` |
+| Training pairs | 3–5 manually selected Mail.ru Help Center Q&A examples |
+| Loss | `MultipleNegativesRankingLoss` |
+| Epochs | 1 |
+| Output path | `/content/drive/MyDrive/fine_tuned_embeddings/` |
+| Integration | Used as the embedding model for FAISS indexing in `train.py` |
+
+The fine-tuned model is automatically trained and saved before the RAG pipeline initialization.  
+This ensures the system uses embeddings better aligned with the Mail.ru support domain.
+
+
 ### Retrieval and Generation
 - Retriever: `FAISS.as_retriever(k=6)`  
 - LLM: `llama-3.1-8b-instant` via **Groq API**
@@ -114,7 +134,8 @@ Each stage (loading → retrieval → generation) prints structured messages.
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **`rag_mailru_qa_with_outputs.ipynb`** | The complete experimental notebook containing all code, visualizations, and final outputs. Serves as the main reference for reproducing results and evaluation metrics.              |
 | **`rag_pipeline.py`**                  | Contains modular functions for data loading, preprocessing, embedding generation, and RAG pipeline construction.                                                                     |
-| **`train.py`**                         | Serves as the main entry point for training and evaluation; reads configuration from `config.yaml`, initializes embeddings, builds the retriever–generator chain, and logs progress. |
+| **`train.py`** | Serves as the main entry point for fine-tuning and evaluation. It performs a lightweight domain-specific fine-tuning of the MiniLM embedding model, reads configuration from `config.yaml`, builds the retriever–generator RAG pipeline, and logs all key stages of execution. |
+
 | **`test_pipeline.py`**                 | Contains lightweight tests for validating data structure, pipeline consistency, and output types (not model accuracy). Integrated into CI/CD workflow.                               |
 | **`config.yaml`**                      | Stores configuration parameters such as model names, random seed, and retriever settings for reproducibility.                                                                        |
 | **`requirements.txt`**                 | Lists all core dependencies (LangChain, FAISS, HuggingFace, Torch, etc.) required to reproduce the RAG pipeline.                                                                     |
