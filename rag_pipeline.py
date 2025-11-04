@@ -3,7 +3,11 @@ import pickle
 import logging
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_groq import ChatGroq
+try:
+    from langchain_core.prompts import ChatPromptTemplate  # 新版路径
+except ImportError:
+    from langchain.prompts import ChatPromptTemplate       # 旧版兜底
+
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.output_parser import StrOutputParser
