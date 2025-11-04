@@ -89,6 +89,13 @@ My  **model weights** have been uploaded to Hugging Face for reproducibility:
 
 - No weight saving (save_pretrained) is required since pretrained API models are used.
 
+### Experiment Plan
+- **Embedding ablations:** MiniLM vs USER-bge; `chunk_size ∈ {300, 500}`, `retrieval_top_k ∈ {4, 6, 8}`.
+- **Retrieval metrics:** Recall@k and MRR (finetuned vs. base).
+- **End metrics:** Target BLEU ≥ 0.04 and LLM-as-judge ≥ 3.5; stop when both are met.
+- **Hallucination control:** refusal policy when context is empty or out-of-scope.
+
+
 ### Key Results
 
 | Embedding Model | Uniformity | Alignment | Comment                       |
@@ -128,6 +135,19 @@ python train.py
 ```
 Logging is handled through Python’s logging module.
 Each stage (loading → retrieval → generation) prints structured messages.
+
+### Reproducibility
+- All random seeds are fixed in `train.py` (Python/NumPy/PyTorch).
+- Data (`help_mail_ru.pkl`) and FAISS index (`db/`) are persisted and reused.
+- Finetuned embeddings are saved with `SentenceTransformer.save_pretrained()` (HF-compatible).
+
+### CLI
+```bash
+pip install -r requirements.txt
+# Optional: use local finetuned embeddings
+unzip fine_tuned_embeddings.zip -d ./fine_tuned_embeddings
+python train.py --config config.yaml --verbose
+
 
 ### Repository Structure Overview
 
