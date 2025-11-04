@@ -1,3 +1,4 @@
+import os
 import pickle
 import logging
 from langchain_community.vectorstores import FAISS
@@ -12,17 +13,11 @@ except ImportError:
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.output_parser import StrOutputParser
 
-# ChatGroq: try to import; if unavailable (e.g., CI without deps), use a tiny stub
+# Try to import ChatGroq; it may exist in CI but we still want a safe fallback
 try:
-    from langchain_groq import ChatGroq
+    from langchain_groq import ChatGroq  # real integration
 except Exception:
-    class ChatGroq:
-        """Minimal stub to keep tests running without external deps/keys."""
-        def __init__(self, *args, **kwargs):
-            pass
-        def invoke(self, prompt):
-            # return a deterministic, harmless string
-            return "Stub LLM response. See https://help.mail.ru/"
+    ChatGroq = None  # if import fails we will use DummyLLM
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
@@ -43,10 +38,24 @@ def format_docs(docs):
     return "\n\n".join(getattr(d, "page_content", str(d)) for d in docs)
 
 
-def build_retriever(db=None, top_k=6):
+class _DummyLLM:
+    """Tiny LLM stub so tests can run without API keys/network."""
+    def __init__(self, *args, **kwargs):
+        pass
+    def invoke(self, prompt):
+        return "Stub LLM response. See https://help.mail.ru/"
+
+
+def _has_groq_key() -> bool:
+    """Check presence of GROQ_API_KEY in environment."""
+    return bool(os.getenv("GROQ_API_KEY"))
+
+
+def build_retriever(db=None, top_k=6, **kwargs):
     """
-    Build a retriever from FAISS. If db is None (e.g., in CI), return an empty retriever
-    that integrates safely into the LangChain pipeline.
+    Build a retriever from FAISS.
+    Accept extra kwargs (docs, embeddings, etc.) to be compatible with tests.
+    If db is None (e.g., in CI), return an empty retriever that safely composes in LC pipeline.
     """
     if db is not None:
         return db.as_retriever(search_kwargs={"k": top_k})
@@ -70,10 +79,14 @@ def build_rag_pipeline(db, llm_model, top_k=6, temperature=0):
     """
     Build a lightweight RAG pipeline.
     - Works even when db=None (empty retriever).
-    - If llm_model == 'dummy' or groq deps are missing, uses the ChatGroq stub above.
+    - Uses Dummy LLM if llm_model == 'dummy' or GROQ_API_KEY is missing.
     """
     retriever = build_retriever(db=db, top_k=top_k)
-    llm = ChatGroq(model=llm_model, temperature=temperature) if llm_model != "dummy" else ChatGroq()
+
+    if llm_model == "dummy" or ChatGroq is None or not _has_groq_key():
+        llm = _DummyLLM()
+    else:
+        llm = ChatGroq(model=llm_model, temperature=temperature)
 
     prompt = ChatPromptTemplate.from_template(
         "Answer the question using the provided context:\n\n{context}\n\nQuestion: {question}"
