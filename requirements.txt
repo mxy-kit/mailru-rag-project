@@ -7,3 +7,9 @@ torch
 numpy
 scikit-learn
 beautifulsoup4
+pandera>=0.18
+pytest>=7
+python-dotenv>=1.0
+ruff>=0.5
+black>=24
+
