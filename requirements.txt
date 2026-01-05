@@ -22,5 +22,6 @@ ruff>=0.5
 black>=24
 
 datasets
+mlflow
 
 

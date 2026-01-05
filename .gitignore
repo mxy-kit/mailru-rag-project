@@ -14,3 +14,4 @@ models/fine_tuned_embeddings/
 
 # Windows installers
 *.exe
+/db
