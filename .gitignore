@@ -1,13 +1,16 @@
-
+# Python
 .venv/
-mlruns/
 __pycache__/
-.pytest_cache/
+*.pyc
 
-
-.venv/
+# MLflow
 mlruns/
-__pycache__/
-.pytest_cache/
+mlflow.db
 
-/db
+# DVC / data artifacts (extra safety)
+data/processed/help_mail_ru.pkl
+db/
+models/fine_tuned_embeddings/
+
+# Windows installers
+*.exe
