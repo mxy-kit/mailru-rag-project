@@ -1,9 +1,17 @@
-chunk_size: 500
-data_path: help_mail_ru.pkl
-db_path: db
-embedding_model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-llm_model: llama-3.1-8b-instant
-overlap: 100
-retrieval_top_k: 6
 seed: 42
+
+# DVC pipeline paths
+raw_data_path: "data/raw/help_mail_ru.pkl"
+data_path: "data/processed/help_mail_ru.pkl"
+
+db_path: "db"
+model_dir: "models/fine_tuned_embeddings"
+metrics_path: "metrics/retrieval.json"
+
+# RAG settings
+chunk_size: 500
+overlap: 100
+embedding_model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+retrieval_top_k: 6
 temperature: 0
+llm_model: "llama-3.1-8b-instant"
