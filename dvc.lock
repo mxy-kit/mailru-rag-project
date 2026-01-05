@@ -38,12 +38,12 @@ stages:
       size: 5181
     - path: train.py
       hash: md5
-      md5: 27fc3942a5f3f7df8170dece933fc548
-      size: 2348
+      md5: b6df9c95f896afb7fdfe0ed9a2484b90
+      size: 6639
     outs:
     - path: db
       hash: md5
-      md5: 13c943c7c72973bd62cbca8debd4598e.dir
+      md5: d662f75406f3ed92163b1d46d1e78cc4.dir
       size: 4438408
       nfiles: 2
     - path: models/fine_tuned_embeddings
@@ -62,13 +62,13 @@ stages:
       size: 1229754
     - path: db
       hash: md5
-      md5: 13c943c7c72973bd62cbca8debd4598e.dir
+      md5: d662f75406f3ed92163b1d46d1e78cc4.dir
       size: 4438408
       nfiles: 2
     - path: evaluate.py
       hash: md5
-      md5: 6aec19b8f6f429b7ec99abe84357fadd
-      size: 2367
+      md5: dfb747870567c0d308a78d16b8c67da8
+      size: 4602
     - path: models/fine_tuned_embeddings
       hash: md5
       md5: 5b5a0c144a692d8a9dd553d19591046c.dir
@@ -77,5 +77,5 @@ stages:
     outs:
     - path: metrics/retrieval.json
       hash: md5
-      md5: 174a2694d3a585ccc753f01bb53bea4e
-      size: 47
+      md5: 6b0bbb61262fdc31ae5e52050438d824
+      size: 203
