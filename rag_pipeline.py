@@ -1,6 +1,7 @@
 import os
 import pickle
 import logging
+from langchain_core.documents import Document
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
@@ -27,6 +28,11 @@ def load_data_and_db(data_path, db_path, embedding_model):
     logging.info("Loading data and FAISS index...")
     with open(data_path, "rb") as f:
         docs = pickle.load(f)
+
+   
+    if isinstance(docs, list) and len(docs) > 0 and isinstance(docs[0], dict) and "page_content" in docs[0]:
+        docs = [Document(page_content=d["page_content"], metadata=d.get("metadata", {})) for d in docs]
+
     embeddings = HuggingFaceEmbeddings(model_name=embedding_model)
     db = FAISS.load_local(db_path, embeddings, allow_dangerous_deserialization=True)
     logging.info("Data and index successfully loaded.")
@@ -109,3 +115,26 @@ def build_rag_pipeline(db, llm_model, top_k=6, temperature=0):
     )
     logging.info("RAG pipeline successfully built.")
     return rag_chain
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
+
+def build_and_save_faiss(data_path, db_path, embedding_model, chunk_size=500, overlap=100):
+    logging.info("Building FAISS index from processed data...")
+
+    with open(data_path, "rb") as f:
+        docs = pickle.load(f)
+
+    # 如果是 prepare 输出的 list[dict]，转回 Document
+    if isinstance(docs, list) and len(docs) > 0 and isinstance(docs[0], dict) and "page_content" in docs[0]:
+        docs = [Document(page_content=d["page_content"], metadata=d.get("metadata", {})) for d in docs]
+
+    splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=overlap)
+    chunks = splitter.split_documents(docs)
+
+    embeddings = HuggingFaceEmbeddings(model_name=embedding_model)
+    db = FAISS.from_documents(chunks, embeddings)
+    db.save_local(db_path)
+
+    logging.info(f"FAISS index saved to {db_path}")
+    return db
+

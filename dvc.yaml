@@ -1,0 +1,32 @@
+stages:
+  prepare:
+    cmd: python prepare.py --input data/raw/help_mail_ru.pkl --output 
+      data/processed/help_mail_ru.pkl --stats data/processed/stats.json
+    deps:
+    - data/raw/help_mail_ru.pkl
+    - prepare.py
+    outs:
+    - data/processed/help_mail_ru.pkl
+    - data/processed/stats.json
+  train:
+    cmd: python train.py --config config.yaml
+    deps:
+    - config.yaml
+    - data/processed/help_mail_ru.pkl
+    - rag_pipeline.py
+    - train.py
+    outs:
+    - db
+    - models/fine_tuned_embeddings
+  evaluate:
+    cmd: python evaluate.py --config config.yaml
+    deps:
+    - config.yaml
+    - data/processed/help_mail_ru.pkl
+    - db
+    - evaluate.py
+    - models/fine_tuned_embeddings
+    - rag_pipeline.py
+    metrics:
+    - metrics/retrieval.json:
+        cache: false
