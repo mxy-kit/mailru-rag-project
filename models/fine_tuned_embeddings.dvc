@@ -1,6 +1,0 @@
-outs:
-- md5: 7abc0fc3a0bde2e5c6b0b57a2e99330c.dir
-  size: 14735
-  nfiles: 8
-  hash: md5
-  path: fine_tuned_embeddings
