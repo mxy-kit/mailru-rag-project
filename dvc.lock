@@ -51,3 +51,31 @@ stages:
       md5: 5b5a0c144a692d8a9dd553d19591046c.dir
       size: 502498902
       nfiles: 11
+  evaluate:
+    cmd: python evaluate.py --data data/processed/help_mail_ru.pkl --db db 
+      --embedding_model models/fine_tuned_embeddings --k 6 --out 
+      metrics/retrieval.json --seed 42 --n 50
+    deps:
+    - path: data/processed/help_mail_ru.pkl
+      hash: md5
+      md5: 8bb5d58a38511bee4cb3c7892f620b55
+      size: 1229754
+    - path: db
+      hash: md5
+      md5: 13c943c7c72973bd62cbca8debd4598e.dir
+      size: 4438408
+      nfiles: 2
+    - path: evaluate.py
+      hash: md5
+      md5: 6aec19b8f6f429b7ec99abe84357fadd
+      size: 2367
+    - path: models/fine_tuned_embeddings
+      hash: md5
+      md5: 5b5a0c144a692d8a9dd553d19591046c.dir
+      size: 502498902
+      nfiles: 11
+    outs:
+    - path: metrics/retrieval.json
+      hash: md5
+      md5: 174a2694d3a585ccc753f01bb53bea4e
+      size: 47
