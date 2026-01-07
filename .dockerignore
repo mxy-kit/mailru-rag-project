@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+.git/
+.dvc/cache/
+mlruns/
+mlflow.db
+data/raw/
+data/processed/
+metrics/
+*.pkl
+*.pt
+*.bin
+*.safetensors
