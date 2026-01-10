@@ -224,13 +224,14 @@ This project uses **local MLflow backend**.
 1) Run training (creates an MLflow run):
 ```bash
 dvc repro
+```
 # or directly:
 python train.py --config config.yaml
 
 Start MLflow UI:
 ```bash
 mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
-
+```
 Open in browser:
 
 http://127.0.0.1:5000
