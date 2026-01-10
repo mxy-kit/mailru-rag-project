@@ -194,10 +194,11 @@ Verify remote configuration
 ```bash
 dvc remote list
 dvc remote list --verbose
+```
 
 ```md
 Pipeline stages are defined in `dvc.yaml` (prepare/train/evaluate) and the exact artifact versions are locked in `dvc.lock`.
-
+```
 ## Task 2 — MLflow: Experiment Tracking (with DVC linkage)
 
 ### What is tracked in MLflow
@@ -272,16 +273,16 @@ Output example: `preds.csv`
 - (Optional) DVC installed if you want to pull artifacts via DVC:
 ```bash
 pip install dvc[gdrive]
-
+```
 ## Build the image-From the project root:
 
 ```bash
 docker build -t ml-app:v1 .
-
+```
 ## If your model/index artifacts are tracked by DVC:
 ```bash
 dvc pull
-
+```
 ##Run offline inference
 ```bash
 docker run --rm `
@@ -289,7 +290,7 @@ docker run --rm `
   ml-app:v1 `
   --input_path /app/data/sample_input.csv `
   --output_path /app/preds.csv
-
+```
 ##Notes
 
 --.dockerignore is used to exclude unnecessary files from the build context.
@@ -335,7 +336,7 @@ Image tag used in this homework:
 
 ```bash
 docker pull 2700264072/mymodel-serve:v1
-
+```
 
 ### 2) Run container
 
@@ -343,7 +344,7 @@ docker pull 2700264072/mymodel-serve:v1
 docker run -d --name mymodel-serve \
   -p 8080:8080 -p 8081:8081 \
   2700264072/mymodel-serve:v1
-
+```
 
 ### 2)Example REST request
 # Example input JSON body
