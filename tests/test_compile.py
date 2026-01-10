@@ -1,12 +1,9 @@
-# tests/test_compile.py
-import compileall
 import pathlib
+import py_compile
 
 def test_python_files_compile():
-    root = pathlib.Path(__file__).resolve().parents[1]  # repo root
-    ok = compileall.compile_dir(
-        str(root),
-        quiet=1,
-        maxlevels=50,
-    )
-    assert ok, "Some .py files failed to compile (syntax error?)"
+    root = pathlib.Path(__file__).resolve().parents[1]
+    for p in root.rglob("*.py"):
+        if any(x in p.parts for x in (".venv", "__pycache__")):
+            continue
+        py_compile.compile(str(p), doraise=True)
