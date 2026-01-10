@@ -302,7 +302,7 @@ docker run --rm `
 ---
 
 
-```md
+
 # Task 4 — TorchServe: Online Service in Docker
 
 This document describes how to run the model as an **online REST service** using TorchServe.
@@ -348,7 +348,7 @@ docker run -d --name mymodel-serve \
 ```
 
 ### 2)Example REST request
-# Example input JSON body
+```bash
 $body = @"
 { "query": "как восстановить пароль?", "top_k": 6 }
 "@
@@ -356,4 +356,4 @@ $body = @"
 curl.exe -s -X POST "http://localhost:8080/predictions/mailru_rag" `
   -H "Content-Type: application/json" `
   --data-binary $body
-
+```
