@@ -245,36 +245,42 @@ Inside each run you can find parameters, metrics, and artifacts (including dvc.l
 This document describes how to build and run a reproducible Docker image for **offline inference**.
 
 ---
-## DockerHub image
 
-The TorchServe service image is published to DockerHub:
+## DockerHub image (Task 3)
 
-https://hub.docker.com/repository/docker/2700264072/mymodel-serve/general
+The **offline inference** image is published to DockerHub:
+
+https://hub.docker.com/repository/docker/2700264072/mailru-rag-offline/general
 
 Image tag used in this homework:
-- `2700264072/mymodel-serve:v1`
+- `2700264072/mailru-rag-offline:v1`
+
+---
 
 ## What the container does
 
-When the container starts, it runs `src/predict.py` which:
+When the container starts, it runs `src/predict.py`, which:
 
-1. loads the model / index artifacts from disk (optionally downloaded via DVC)
+1. loads the required artifacts from disk (e.g., FAISS index / embedding model dir, depending on your config)
 2. accepts command-line arguments:
-   - `--input_path`: path to input data file
-   - `--output_path`: path to save predictions
-3. reads data from `input_path`, performs `predict`, and writes results to `output_path`
+   - `--input_path`: path to input file (inside container)
+   - `--output_path`: path to save predictions (inside container)
+3. reads queries from `input_path`, performs inference, and writes results to `output_path`
 
-Output example: `preds.csv`
+**Input format:** CSV must contain a column named `query`.
+
+**Output example:** `outputs/preds.csv`
 
 ---
 
 ## Prerequisites
 
 - Docker Desktop installed
-- (Optional) DVC installed if you want to pull artifacts via DVC:
+
+(Optional) DVC installed if you want to pull artifacts via DVC:
 ```bash
-pip install dvc[gdrive]
-```
+pip install "dvc[gdrive]"
+
 ## Build the image-From the project root:
 
 ```bash
@@ -356,4 +362,33 @@ $body = @"
 curl.exe -s -X POST "http://localhost:8080/predictions/mailru_rag" `
   -H "Content-Type: application/json" `
   --data-binary $body
+```
+### 3)Example response (truncated)
+```bash
+[
+  {
+    "query": "{query:как восстановить пароль?}",
+    "top_k": 6,
+    "results": [
+      {
+        "score": 6.5856781005859375,
+        "preview": "Восстановить доступ ...",
+        "metadata": {
+          "source": "https://help.mail.ru/mail/security/",
+          "title": "Безопасность — Почта Mail ...",
+          "language": "ru-RU"
+        }
+      },
+      {
+        "score": 9.758225440979004,
+        "preview": "почту взломали ... Измените пароль ...",
+        "metadata": {
+          "source": "https://help.mail.ru/mail/security/restore/blocked/",
+          "title": "Как войти в Почту Mail, если забыли пароль ...",
+          "language": "ru-RU"
+        }
+      }
+    ]
+  }
+]
 ```
