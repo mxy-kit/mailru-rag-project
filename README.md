@@ -3,6 +3,15 @@
 
 
 ---
+# Mail.ru Help Center RAG + MLOps (DVC + MLflow + Docker + TorchServe)
+
+## ✅ Homework Checklist (MLOps)
+
+- [x] **Task 1 (DVC)**: data/model artifacts are tracked by DVC + remote storage configured; reproducible via `dvc pull && dvc repro`
+- [x] **Task 2 (MLflow)**: every `python train.py` creates a new MLflow run with params/metrics/artifacts (+ DVC hash tags)
+- [x] **Task 3 (Docker offline inference)**: reproducible image builds and runs `src/predict.py` with `--input_path/--output_path`
+- [x] **Task 4 (TorchServe online service)**: Docker image starts TorchServe and serves `/predictions/mymodel`
+- [x] **CI**: GitHub Actions runs tests and builds docker image
 
 ##  Project Goal 
 
@@ -87,8 +96,6 @@ My  **model weights** have been uploaded to Hugging Face for reproducibility:
 
 - Data `help_mail_ru.pkl` and FAISS index (`db/`) allow full reproducibility.
 
-- No weight saving (save_pretrained) is required since pretrained API models are used.
-
 ### Key Results
 
 | Embedding Model | Uniformity | Alignment | Comment                       |
@@ -156,4 +163,195 @@ Each stage (loading → retrieval → generation) prints structured messages.
 - They are designed for MLOps compliance and structural clarity, rather than independent execution.
 
 
+
+## Task 1 — DVC: Data/Model Versioning
+
+### What is tracked by DVC
+- Raw dataset (large file): `data/raw/help_mail_ru.pkl` (tracked as a `.dvc` pointer file, so the big file is stored outside Git)
+- Pipeline outputs (examples, as declared in `dvc.yaml`): `models/`, `db/` (FAISS index), etc.
+
+> Large files are NOT stored in Git. Git stores only small `.dvc` pointer files + `dvc.yaml` / `dvc.lock` to reproduce exact versions.
+
+### Where the data/models physically live (remote storage)
+- DVC remote storage: **Google Drive folder**  
+  https://drive.google.com/drive/u/1/folders/1pqyGYExEy1bYDGlVsA-5ve3KTgCpOflt
+
+### Reproduce everything (fresh clone)
+```bash
+git clone https://github.com/mxy-kit/mailru-rag-project.git
+cd mailru-rag-project
+git checkout hw2_dvc_mlflow_docker_torchserve
+
+pip install -r requirements.txt
+
+# download all DVC-tracked data/models from Google Drive
+dvc pull
+
+# run the full pipeline: prepare -> train -> evaluate
+dvc repro
+
+Verify remote configuration 
+```bash
+dvc remote list
+dvc remote list --verbose
+
+```md
+Pipeline stages are defined in `dvc.yaml` (prepare/train/evaluate) and the exact artifact versions are locked in `dvc.lock`.
+
+## Task 2 — MLflow: Experiment Tracking (with DVC linkage)
+
+### What is tracked in MLflow
+Each run of `python train.py ...` creates a separate MLflow run that logs:
+- **Parameters**: seed, chunk_size, overlap, retrieval_top_k, temperature, embedding_model, data_path, db_path, etc.
+- **Metrics**: e.g. `train_total_seconds` (and other evaluation metrics if you log them in `evaluate.py`)
+- **Artifacts**:
+  - `dvc.lock` (to bind experiment ↔ exact data/model versions)
+  - fine-tuned embedding model directory (logged under artifacts)
+  - FAISS index folder (`db/`) (logged under artifacts)
+  - MLflow Model (PyFunc) for SentenceTransformer embeddings (so it can appear in MLflow UI “Models”)
+
+### DVC + MLflow binding (optional bonus implemented)
+This project links DVC versions to MLflow runs by:
+- logging `dvc.lock` as an MLflow artifact
+- setting tags with DVC hashes, e.g.:
+  - `dvc_raw_md5` (read from `data/raw/help_mail_ru.pkl.dvc`)
+  - `dvc_lock_sha1` (hash of `dvc.lock`)
+
+### How to run MLflow locally (UI)
+This project uses **local MLflow backend**.
+
+1) Run training (creates an MLflow run):
+```bash
+dvc repro
+# or directly:
+python train.py --config config.yaml
+
+Start MLflow UI:
+```bash
+mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
+
+Open in browser:
+
+http://127.0.0.1:5000
+
+In the UI you should see the experiment mailru-rag and multiple runs.
+Inside each run you can find parameters, metrics, and artifacts (including dvc.lock and model/index artifacts).
+
+
+# Task 3 — Docker: Offline Inference Image
+
+This document describes how to build and run a reproducible Docker image for **offline inference**.
+
+---
+## DockerHub image
+
+The TorchServe service image is published to DockerHub:
+
+https://hub.docker.com/repository/docker/2700264072/mymodel-serve/general
+
+Image tag used in this homework:
+- `2700264072/mymodel-serve:v1`
+
+## What the container does
+
+When the container starts, it runs `src/predict.py` which:
+
+1. loads the model / index artifacts from disk (optionally downloaded via DVC)
+2. accepts command-line arguments:
+   - `--input_path`: path to input data file
+   - `--output_path`: path to save predictions
+3. reads data from `input_path`, performs `predict`, and writes results to `output_path`
+
+Output example: `preds.csv`
+
+---
+
+## Prerequisites
+
+- Docker Desktop installed
+- (Optional) DVC installed if you want to pull artifacts via DVC:
+```bash
+pip install dvc[gdrive]
+
+## Build the image-From the project root:
+
+```bash
+docker build -t ml-app:v1 .
+
+## If your model/index artifacts are tracked by DVC:
+```bash
+dvc pull
+
+##Run offline inference
+```bash
+docker run --rm `
+  -v ${PWD}:/app `
+  ml-app:v1 `
+  --input_path /app/data/sample_input.csv `
+  --output_path /app/preds.csv
+
+##Notes
+
+--.dockerignore is used to exclude unnecessary files from the build context.
+
+--Large artifacts should not be committed to Git; use DVC (dvc pull) to restore them when needed.
+
+
+---
+
+
+```md
+# Task 4 — TorchServe: Online Service in Docker
+
+This document describes how to run the model as an **online REST service** using TorchServe.
+
+---
+
+## DockerHub image
+
+The TorchServe service image is published to DockerHub:
+
+https://hub.docker.com/repository/docker/2700264072/mymodel-serve/general
+
+Image tag used in this homework:
+- `2700264072/mymodel-serve:v1`
+
+---
+
+## What is included
+
+- Base image: `pytorch/torchserve`
+- Model archive: `model-store/mymodel.mar` (built via `torch-model-archiver`)
+- Custom inference handler: `handler.py` (preprocessing + postprocessing)
+- Container startup automatically:
+  - starts TorchServe
+  - registers the model under the name `mymodel`
+
+---
+
+## Run the service locally
+
+### 1) Pull from DockerHub
+
+```bash
+docker pull 2700264072/mymodel-serve:v1
+
+
+### 2) Run container
+
+```bash
+docker run -d --name mymodel-serve \
+  -p 8080:8080 -p 8081:8081 \
+  2700264072/mymodel-serve:v1
+
+
+### 2)Example REST request
+# Example input JSON body
+$body = @"
+{ "query": "как восстановить пароль?", "top_k": 6 }
+"@
+
+curl.exe -s -X POST "http://localhost:8080/predictions/mailru_rag" `
+  -H "Content-Type: application/json" `
+  --data-binary $body
 
