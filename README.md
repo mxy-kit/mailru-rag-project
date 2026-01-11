@@ -198,6 +198,10 @@ dvc remote list --verbose
 ```md
 Pipeline stages are defined in `dvc.yaml` (prepare/train/evaluate) and the exact artifact versions are locked in `dvc.lock`.
 ```
+**`prepare`**: preprocess raw corpus → outputs processed artifacts
+**`train`**: (optional) finetune embedder + build FAISS index → outputs **`models/ `**and **`db/`**
+**`evaluate`**: compute metrics → outputs **`metrics/... `**and **`reports/...`**
+
 ## Task 2 — MLflow: Experiment Tracking (with DVC linkage)
 
 ### What is tracked in MLflow
@@ -225,6 +229,7 @@ This project uses **local MLflow backend**.
 
 1) Run training (creates an MLflow run):
 ```bash
+$env:MLFLOW_TRACKING_URI="sqlite:///mlflow.db"
 dvc repro
 ```
  or directly:
@@ -284,10 +289,8 @@ When the container starts, it runs `src/predict.py`, which:
 ```bash
 pip install "dvc[gdrive]"
 ```
-## Build the image-From the project root:
-
 ```bash
-docker build -t ml-app:v1 .
+pip install -r requirements.txt
 ```
 ## If your model/index artifacts are tracked by DVC:
 ```bash
