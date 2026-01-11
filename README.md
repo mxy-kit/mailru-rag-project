@@ -156,7 +156,6 @@ Each stage (loading → retrieval → generation) prints structured messages.
 | **`.github/workflows/*.yml`**   | GitHub Actions: install deps, run lint/tests on every push/PR; fails on errors.                                                                                               |
 | **`help_mail_ru.pkl`**          | Serialized, cleaned Mail.ru Help Center corpus (recursive crawl + HTML parsing).                                                                                              |
 | **`db/`**                       | Persisted FAISS index (`index.faiss`, `index.pkl`) to avoid re-indexing.                                                                                                      |
-| **`fine_tuned_embeddings.zip`** | Zipped Sentence-Transformers model after fine-tuning (MiniLM). **Unzip to `./fine_tuned_embeddings/`** and set `embedding_model: "./fine_tuned_embeddings"` in `config.yaml`. |
 
 ### Note:
 - The .py scripts represent modularized components of the same pipeline shown in the notebook.
@@ -284,7 +283,7 @@ When the container starts, it runs `src/predict.py`, which:
 (Optional) DVC installed if you want to pull artifacts via DVC:
 ```bash
 pip install "dvc[gdrive]"
-
+```
 ## Build the image-From the project root:
 
 ```bash
@@ -297,10 +296,11 @@ dvc pull
 ##Run offline inference
 ```bash
 docker run --rm `
-  -v ${PWD}:/app `
+  -v ${PWD}\data:/app/data `
+  -v ${PWD}\outputs:/app/outputs `
   ml-app:v1 `
   --input_path /app/data/sample_input.csv `
-  --output_path /app/preds.csv
+  --output_path /app/outputs/preds.csv
 ```
 ##Notes
 
@@ -357,17 +357,17 @@ docker run -d --name mymodel-serve \
   2700264072/mymodel-serve:v1
 ```
 
-### 2)Example REST request
+### 3)Example REST request
 ```bash
 $body = @"
 { "query": "как восстановить пароль?", "top_k": 6 }
 "@
 
-curl.exe -s -X POST "http://localhost:8080/predictions/mailru_rag" `
+curl.exe -s -X POST "http://localhost:8080/predictions/mymodel" `
   -H "Content-Type: application/json" `
   --data-binary $body
 ```
-### 3)Example response (truncated)
+### 4)Example response (truncated)
 ```bash
 [
   {
