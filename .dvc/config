@@ -1,0 +1,6 @@
+[core]
+    remote = gdrive
+['remote "storage"']
+    url = C:\Users\MXY\dvc-remote\mailru-rag-project
+['remote "gdrive"']
+    url = gdrive://1hbRCOFynUDyf9QEwq18NR0h3KKdSmob_

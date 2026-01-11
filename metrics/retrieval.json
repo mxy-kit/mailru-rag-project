@@ -1,0 +1,10 @@
+{
+  "hit_at_k": 0.42,
+  "k": 6,
+  "n": 50,
+  "valid": 50,
+  "seed": 42,
+  "embedding_model": "models/fine_tuned_embeddings",
+  "data_path": "data/processed/help_mail_ru.pkl",
+  "db_path": "db"
+}

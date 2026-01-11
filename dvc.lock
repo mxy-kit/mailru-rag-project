@@ -1,0 +1,81 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python prepare.py --input data/raw/help_mail_ru.pkl --output 
+      data/processed/help_mail_ru.pkl --stats data/processed/stats.json
+    deps:
+    - path: data/raw/help_mail_ru.pkl
+      hash: md5
+      md5: 991e2d4cf7a78f0d208cfdf8fe0fa0f4
+      size: 1237263
+    - path: prepare.py
+      hash: md5
+      md5: cef72c2688afe9b7b41b8184c37cb909
+      size: 2392
+    outs:
+    - path: data/processed/help_mail_ru.pkl
+      hash: md5
+      md5: 8bb5d58a38511bee4cb3c7892f620b55
+      size: 1229754
+    - path: data/processed/stats.json
+      hash: md5
+      md5: 21e25939f669fd368deebf5e65bd3ffc
+      size: 106
+  train:
+    cmd: python train.py --config config.yaml
+    deps:
+    - path: config.yaml
+      hash: md5
+      md5: 2a14a9d5457f2dbed23b474459dcab90
+      size: 424
+    - path: data/processed/help_mail_ru.pkl
+      hash: md5
+      md5: 8bb5d58a38511bee4cb3c7892f620b55
+      size: 1229754
+    - path: rag_pipeline.py
+      hash: md5
+      md5: f5a1c7a234eb41e9e076ccd09232f0c3
+      size: 5181
+    - path: train.py
+      hash: md5
+      md5: b6df9c95f896afb7fdfe0ed9a2484b90
+      size: 6639
+    outs:
+    - path: db
+      hash: md5
+      md5: d662f75406f3ed92163b1d46d1e78cc4.dir
+      size: 4438408
+      nfiles: 2
+    - path: models/fine_tuned_embeddings
+      hash: md5
+      md5: 5b5a0c144a692d8a9dd553d19591046c.dir
+      size: 502498902
+      nfiles: 11
+  evaluate:
+    cmd: python evaluate.py --data data/processed/help_mail_ru.pkl --db db 
+      --embedding_model models/fine_tuned_embeddings --k 6 --out 
+      metrics/retrieval.json --seed 42 --n 50
+    deps:
+    - path: data/processed/help_mail_ru.pkl
+      hash: md5
+      md5: 8bb5d58a38511bee4cb3c7892f620b55
+      size: 1229754
+    - path: db
+      hash: md5
+      md5: d662f75406f3ed92163b1d46d1e78cc4.dir
+      size: 4438408
+      nfiles: 2
+    - path: evaluate.py
+      hash: md5
+      md5: dfb747870567c0d308a78d16b8c67da8
+      size: 4602
+    - path: models/fine_tuned_embeddings
+      hash: md5
+      md5: 5b5a0c144a692d8a9dd553d19591046c.dir
+      size: 502498902
+      nfiles: 11
+    outs:
+    - path: metrics/retrieval.json
+      hash: md5
+      md5: 6b0bbb61262fdc31ae5e52050438d824
+      size: 203
