@@ -374,6 +374,10 @@ Image tag used in this homework:
 ```bash
 docker pull 2700264072/mymodel-serve:v1
 ```
+### or Build TorchServe image locally (from repo)
+```bash
+docker build -t mymodel-serve:v1 -f torchserve/Dockerfile .
+
 
 ### 2) Run container
 
