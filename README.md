@@ -366,16 +366,11 @@ curl -s http://localhost:8081/models
 
 ### 3)Example REST request
 ```bash
-$body = @"
-{ "query": "как восстановить пароль?", "top_k": 6 }
-"@
+curl -X POST http://localhost:8080/predictions/mymodel -T sample_input.json
 
-curl.exe -s -X POST "http://localhost:8080/predictions/mymodel" `
-  -H "Content-Type: application/json" `
-  --data-binary $body
 ```
 ### 4)Example response (truncated)
 ```bash
-curl -X POST http://localhost:8080/predictions/mymodel -T sample_input.json
+[ { "query": "{query:как восстановить пароль?}", "top_k": 6, "results": [ { "score": 6.5856781005859375, "preview": "Восстановить доступ ...", "metadata": { "source": "https://help.mail.ru/mail/security/", "title": "Безопасность — Почта Mail ...", "language": "ru-RU" } }, { "score": 9.758225440979004, "preview": "почту взломали ... Измените пароль ...", "metadata": { "source": "https://help.mail.ru/mail/security/restore/blocked/", "title": "Как войти в Почту Mail, если забыли пароль ...", "language": "ru-RU" } } ] } ]
 
 ```
