@@ -211,13 +211,16 @@ Each run of `python train.py ...` creates a separate MLflow run that logs:
   - FAISS index folder (`db/`) (logged under artifacts)
   - MLflow Model (PyFunc) for SentenceTransformer embeddings (so it can appear in MLflow UI “Models”)
 
-### DVC + MLflow binding (optional bonus implemented)
+### DVC + MLflow binding 
 This project links DVC versions to MLflow runs by:
 - logging `dvc.lock` as an MLflow artifact
 - setting tags with DVC hashes, e.g.:
   - `dvc_raw_md5` (read from `data/raw/help_mail_ru.pkl.dvc`)
   - `dvc_lock_sha1` (hash of `dvc.lock`)
 
+### Where the data/models physically live (remote storage)
+- DVC remote storage: **Google Drive folder**  
+  https://drive.google.com/drive/u/1/folders/1pqyGYExEy1bYDGlVsA-5ve3KTgCpOflt
 ### How to run MLflow locally (UI)
 This project uses **local MLflow backend**.
 
@@ -225,9 +228,10 @@ This project uses **local MLflow backend**.
 ```bash
 dvc repro
 ```
-# or directly:
+ or directly:
+ ```bash
 python train.py --config config.yaml
-
+```
 Start MLflow UI:
 ```bash
 mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
