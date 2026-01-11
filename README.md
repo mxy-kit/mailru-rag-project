@@ -200,14 +200,13 @@ dvc remote list --verbose
 DVC artifacts are pinned by `dvc.lock` in each Git revision.  
 You can restore dataset/model versions for a different revision by:
 
-# switch to an older revision (example)
+switch to an older revision (example)
 ```bash
 git checkout 4f0da39   # Switch DVC remote to Google Drive
 dvc pull
 dvc repro
 ```
-
-# switch back to the latest revision
+switch back to the latest revision
 ```bash
 git checkout hw2_dvc_mlflow_docker_torchserve
 dvc pull
