@@ -12,6 +12,8 @@
 - [x] **Task 3 (Docker offline inference)**: reproducible image builds and runs `src/predict.py` with `--input_path/--output_path`
 - [x] **Task 4 (TorchServe online service)**: Docker image starts TorchServe and serves `/predictions/mymodel`
 - [x] **CI**: GitHub Actions runs tests and builds docker image
+- [x] **Extra**: Docker images are published to DockerHub; DVC↔MLflow are bonded（dvc.lock artifact + hash tags）；model weights are published on Hugging Face (for reproducibility).
+
 
 ##  Project Goal 
 
@@ -170,7 +172,7 @@ Each stage (loading → retrieval → generation) prints structured messages.
 - Pipeline outputs (examples, as declared in `dvc.yaml`): `models/`, `db/` (FAISS index), etc.
 
 > Large files are NOT stored in Git. Git stores only small `.dvc` pointer files + `dvc.yaml` / `dvc.lock` to reproduce exact versions.
-
+-Image size is kept under 1GB .
 ### Where the data/models physically live (remote storage)
 - DVC remote storage: **Google Drive folder**  
   https://drive.google.com/drive/u/1/folders/1pqyGYExEy1bYDGlVsA-5ve3KTgCpOflt
@@ -194,13 +196,28 @@ Verify remote configuration
 dvc remote list
 dvc remote list --verbose
 ```
+### Version switching check (DVC)
+DVC artifacts are pinned by `dvc.lock` in each Git revision.  
+You can restore dataset/model versions for a different revision by:
 
-```md
-Pipeline stages are defined in `dvc.yaml` (prepare/train/evaluate) and the exact artifact versions are locked in `dvc.lock`.
+```bash
+# switch to an older revision (example)
+git checkout 4f0da39   # Switch DVC remote to Google Drive
+dvc pull
+dvc repro
 ```
-**`prepare`**: preprocess raw corpus → outputs processed artifacts
-**`train`**: (optional) finetune embedder + build FAISS index → outputs **`models/ `**and **`db/`**
-**`evaluate`**: compute metrics → outputs **`metrics/... `**and **`reports/...`**
+# switch back to the latest revision
+```bash
+git checkout hw2_dvc_mlflow_docker_torchserve
+dvc pull
+dvc repro
+```
+
+-Pipeline stages are defined in **`dvc.yaml`** (prepare/train/evaluate) and the exact artifact versions are locked in `dvc.lock`.
+
+-**`prepare`**: preprocess raw corpus → outputs processed artifacts
+-**`train`**: (optional) finetune embedder + build FAISS index → outputs **`models/ `**and **`db/`**
+-**`evaluate`**: compute metrics → outputs **`metrics/... `**and **`reports/...`**
 
 ## Task 2 — MLflow: Experiment Tracking (with DVC linkage)
 
