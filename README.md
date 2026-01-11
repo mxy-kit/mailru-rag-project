@@ -12,7 +12,7 @@
 - [x] **Task 3 (Docker offline inference)**: reproducible image builds and runs `src/predict.py` with `--input_path/--output_path`
 - [x] **Task 4 (TorchServe online service)**: Docker image starts TorchServe and serves `/predictions/mymodel`
 - [x] **CI**: GitHub Actions runs tests and builds docker image
-- [x] **Extra**: Docker images are published to DockerHub; DVC↔MLflow are bonded（dvc.lock artifact + hash tags）；model weights are published on Hugging Face (for reproducibility).
+- [x] **Extra**: Docker images are published to DockerHub; DVC↔MLflow are binded（dvc.lock artifact + hash tags）；model weights are published on Hugging Face (for reproducibility).
 
 
 ##  Project Goal 
