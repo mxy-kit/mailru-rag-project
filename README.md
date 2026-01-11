@@ -188,7 +188,7 @@ dvc pull
 
 # run the full pipeline: prepare -> train -> evaluate
 dvc repro
-
+```
 Verify remote configuration 
 ```bash
 dvc remote list
@@ -295,6 +295,7 @@ dvc pull
 ```
 ##Run offline inference
 ```bash
+docker build -t ml-app:v1 .
 docker run --rm `
   -v ${PWD}\data:/app/data `
   -v ${PWD}\outputs:/app/outputs `
@@ -356,6 +357,12 @@ docker run -d --name mymodel-serve \
   -p 8080:8080 -p 8081:8081 \
   2700264072/mymodel-serve:v1
 ```
+## Inference Interface
+
+```bash
+curl -s http://localhost:8081/ping
+curl -s http://localhost:8081/models
+```
 
 ### 3)Example REST request
 ```bash
@@ -369,30 +376,6 @@ curl.exe -s -X POST "http://localhost:8080/predictions/mymodel" `
 ```
 ### 4)Example response (truncated)
 ```bash
-[
-  {
-    "query": "{query:как восстановить пароль?}",
-    "top_k": 6,
-    "results": [
-      {
-        "score": 6.5856781005859375,
-        "preview": "Восстановить доступ ...",
-        "metadata": {
-          "source": "https://help.mail.ru/mail/security/",
-          "title": "Безопасность — Почта Mail ...",
-          "language": "ru-RU"
-        }
-      },
-      {
-        "score": 9.758225440979004,
-        "preview": "почту взломали ... Измените пароль ...",
-        "metadata": {
-          "source": "https://help.mail.ru/mail/security/restore/blocked/",
-          "title": "Как войти в Почту Mail, если забыли пароль ...",
-          "language": "ru-RU"
-        }
-      }
-    ]
-  }
-]
+curl -X POST http://localhost:8080/predictions/mymodel -T sample_input.json
+
 ```
