@@ -200,12 +200,13 @@ dvc remote list --verbose
 DVC artifacts are pinned by `dvc.lock` in each Git revision.  
 You can restore dataset/model versions for a different revision by:
 
-```bash
 # switch to an older revision (example)
+```bash
 git checkout 4f0da39   # Switch DVC remote to Google Drive
 dvc pull
 dvc repro
 ```
+
 # switch back to the latest revision
 ```bash
 git checkout hw2_dvc_mlflow_docker_torchserve
@@ -215,9 +216,11 @@ dvc repro
 
 -Pipeline stages are defined in **`dvc.yaml`** (prepare/train/evaluate) and the exact artifact versions are locked in `dvc.lock`.
 
--**`prepare`**: preprocess raw corpus → outputs processed artifacts
--**`train`**: (optional) finetune embedder + build FAISS index → outputs **`models/ `**and **`db/`**
--**`evaluate`**: compute metrics → outputs **`metrics/... `**and **`reports/...`**
+-**`prepare.py`**: preprocess raw corpus → outputs processed artifacts
+
+-**`train.py`**: (optional) finetune embedder + build FAISS index → outputs **`models/ `**and **`db/`**
+
+-**`evaluate.py`**: compute metrics → outputs **`metrics/... `**and **`reports/...`**
 
 ## Task 2 — MLflow: Experiment Tracking (with DVC linkage)
 
